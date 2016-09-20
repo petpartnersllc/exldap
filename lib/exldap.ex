@@ -84,11 +84,11 @@ defmodule Exldap do
   def open(server, port, ssl, timeout \\ :infinity)
 
   def open(server, port, ssl, timeout) when is_atom(timeout) do
-    :eldap.open([to_charlist(server)], [{:port, port}, {:ssl, ssl}])
+    :eldap.open([to_char_list(server)], [{:port, port}, {:ssl, ssl}])
   end
 
   def open(server, port, ssl, timeout) do
-    :eldap.open([to_charlist(server)], [{:port, port}, {:ssl, ssl}, {:timeout, timeout}])
+    :eldap.open([to_char_list(server)], [{:port, port}, {:ssl, ssl}, {:timeout, timeout}])
   end
 
   @doc ~S"""
@@ -117,7 +117,7 @@ defmodule Exldap do
 
   """
   def verify_credentials(connection, user_dn, password) do
-    :eldap.simple_bind(connection, to_charlist(user_dn), to_charlist(password))
+    :eldap.simple_bind(connection, to_char_list(user_dn), to_char_list(password))
   end
 
   @doc ~S"""
@@ -150,9 +150,9 @@ defmodule Exldap do
     settings = Application.get_env :exldap, :settings
     search_timeout = settings |> Dict.get(:search_timeout) || 0
 
-    base_config = {:base, to_charlist(base)}
+    base_config = {:base, to_char_list(base)}
     scope = {:scope, :eldap.wholeSubtree()}
-    filter = {:filter, :eldap.equalityMatch(to_charlist(field), to_charlist(name))}
+    filter = {:filter, :eldap.equalityMatch(to_char_list(field), to_char_list(name))}
     timeout = {:timeout, search_timeout}
     options = [base_config, scope, filter, timeout]
 
@@ -190,7 +190,7 @@ defmodule Exldap do
 
   """
   def search_substring(connection, base, field, {atom, substring}) do
-    #filter = :eldap.substrings(to_charlist(field), [{:any, to_charlist(substring)}])
+    #filter = :eldap.substrings(to_char_list(field), [{:any, to_char_list(substring)}])
     filter = substrings(field, {atom, substring})
     search_with_filter(connection, base, filter)
   end
@@ -221,13 +221,13 @@ defmodule Exldap do
   """
   def substrings(field, substring) when is_list(substring) do
     list_as_charlist = Enum.map(substring, fn({atom, sub}) -> 
-      {atom, to_charlist(sub)} 
+      {atom, to_char_list(sub)} 
     end)
-    :eldap.substrings(to_charlist(field), list_as_charlist)
+    :eldap.substrings(to_char_list(field), list_as_charlist)
   end
 
   def substrings(field, {atom, substring}) do
-    :eldap.substrings(to_charlist(field), [{atom, to_charlist(substring)}])
+    :eldap.substrings(to_char_list(field), [{atom, to_char_list(substring)}])
   end
 
   @doc ~S"""
@@ -239,7 +239,7 @@ defmodule Exldap do
 
   """
   def approxMatch(field, value) do
-    :eldap.approxMatch(to_charlist(field), to_charlist(value))
+    :eldap.approxMatch(to_char_list(field), to_char_list(value))
   end
 
   @doc ~S"""
@@ -251,7 +251,7 @@ defmodule Exldap do
 
   """
   def lessOrEqual(field, value) do
-    :eldap.lessOrEqual(to_charlist(field), to_charlist(value))
+    :eldap.lessOrEqual(to_char_list(field), to_char_list(value))
   end
 
   @doc ~S"""
@@ -263,7 +263,7 @@ defmodule Exldap do
 
   """
   def greaterOrEqual(field, value) do
-    :eldap.greaterOrEqual(to_charlist(field), to_charlist(value))
+    :eldap.greaterOrEqual(to_char_list(field), to_char_list(value))
   end
 
   @doc ~S"""
@@ -275,7 +275,7 @@ defmodule Exldap do
 
   """
   def equalityMatch(field, value) do
-    :eldap.equalityMatch(to_charlist(field), to_charlist(value))
+    :eldap.equalityMatch(to_char_list(field), to_char_list(value))
   end
 
   @doc ~S"""
@@ -288,7 +288,7 @@ defmodule Exldap do
   """
   def present(type) do
     type 
-      |> to_charlist 
+      |> to_char_list 
       |> :eldap.present
   end
 
@@ -302,9 +302,9 @@ defmodule Exldap do
   """
   def extensibleMatch(match_value, match_attributes) do    
     list_as_charlist = Enum.map(match_attributes, fn({atom, match_attribute}) -> 
-      {atom, to_charlist(match_attribute)} 
+      {atom, to_char_list(match_attribute)} 
     end)
-    :eldap.extensibleMatch(to_charlist(match_value), list_as_charlist)
+    :eldap.extensibleMatch(to_char_list(match_value), list_as_charlist)
   end
 
   @doc ~S"""
@@ -437,7 +437,7 @@ defmodule Exldap do
     settings = Application.get_env :exldap, :settings
     search_timeout = settings |> Dict.get(:search_timeout) || 0
 
-    base_config = {:base, to_charlist(base)}
+    base_config = {:base, to_char_list(base)}
     scope = {:scope, :eldap.wholeSubtree()}
     filter = {:filter, filter}
     timeout = {:timeout, search_timeout}
@@ -484,7 +484,7 @@ defmodule Exldap do
 
   """
   def search_attributes(%Exldap.Entry{} = entry, key) do
-    list_key = key |> to_charlist
+    list_key = key |> to_char_list
     if List.keymember?(entry.attributes, list_key, 0) do
       {_, value} = List.keyfind(entry.attributes, list_key, 0)
       results = Enum.map(value, fn(x) ->

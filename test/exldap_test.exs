@@ -109,7 +109,7 @@ defmodule ExldapTest do
 
   test "search initial substring with charlist input" do
     settings = Application.get_env :exldap, :settings
-    base = settings |> Dict.get(:base) |> to_charlist
+    base = settings |> Dict.get(:base) |> to_char_list
     
     {:ok, connection} = Exldap.connect
     {:ok, search_result} = Exldap.search_substring(connection, base, 'samAccountName', {:initial, 'test123'})
@@ -155,7 +155,7 @@ defmodule ExldapTest do
 
   test "search any substring with charlist input" do
     settings = Application.get_env :exldap, :settings
-    base = settings |> Dict.get(:base) |> to_charlist
+    base = settings |> Dict.get(:base) |> to_char_list
     
     {:ok, connection} = Exldap.connect
     {:ok, search_result} = Exldap.search_substring(connection, base, 'cn', 'test123')
@@ -181,7 +181,7 @@ defmodule ExldapTest do
 
   test "search final substring with charlist input" do
     settings = Application.get_env :exldap, :settings
-    base = settings |> Dict.get(:base) |> to_charlist
+    base = settings |> Dict.get(:base) |> to_char_list
     
     {:ok, connection} = Exldap.connect
     {:ok, search_result} = Exldap.search_substring(connection, base, 'cn', {:final, 'test123'})
